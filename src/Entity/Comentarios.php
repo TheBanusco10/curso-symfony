@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ComentariosRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +38,11 @@ class Comentarios
      * @ORM\ManyToOne(targetEntity=Posts::class, inversedBy="comentarios")
      */
     private $posts;
+
+    public function __construct()
+    {
+        $this->fecha_publicacion = new DateTime();
+    }
 
     public function getId(): ?int
     {

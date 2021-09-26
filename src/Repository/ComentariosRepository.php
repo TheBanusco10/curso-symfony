@@ -19,6 +19,17 @@ class ComentariosRepository extends ServiceEntityRepository
         parent::__construct($registry, Comentarios::class);
     }
 
+    public function getComentariosPost($post_id) {
+        $query = "
+            SELECT com.comentario, com.fecha_publicacion, user.nombre
+            FROM App\Entity\Comentarios com
+            JOIN com.user user
+            WHERE com.posts = :post_id
+        ";
+
+        return $this->getEntityManager()->createQuery($query)->setParameter('post_id', $post_id);
+    }
+
     // /**
     //  * @return Comentarios[] Returns an array of Comentarios objects
     //  */

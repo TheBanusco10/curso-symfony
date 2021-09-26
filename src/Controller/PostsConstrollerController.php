@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comentarios;
 use App\Entity\Posts;
+use App\Form\ComentariosType;
 use App\Form\PostsType;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -73,13 +75,35 @@ class PostsConstrollerController extends AbstractController
     /**
      * @Route("/post/{id}", name="post")
      */
-    public function verPost($id) {
+    public function verPost(Request $request, $id) {
         $em = $this->getDoctrine()->getManager();
 
         $post = $em->getRepository(Posts::class)->find($id);
+        $comentarios = $em->getRepository(Comentarios::class)->getComentariosPost($id)->getResult();
+
+        $comentario = new Comentarios();
+
+        $form = $this->createForm(ComentariosType::class, $comentario);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $user = $this->getUser();
+            $comentario->setUser($user);
+            $comentario->setPosts($post);
+
+            $em->persist($comentario);
+            $em->flush();
+
+            return $this->redirectToRoute('post',['id'=>$post->getId()]);
+        }
 
         return $this->render('posts/verPost.html.twig', [
-            'post' => $post
+            'post' => $post,
+            'form' => $form->createView(),
+            'comentarios' => $comentarios
         ]);
     }
 

@@ -38,7 +38,27 @@
         <div class="text-justify my-3">
             {{ post.contenido }}
         </div>
+        <hr>
+        {{ form(form) }}
+        <div class="comentarios mt-5">
+        
+            {% for com in comentarios %}
+                <div class="comentario mb-3">
+                    <p> 
+                        <h5 class="mb-2">{{ com.nombre }}</h5>
+                        {{ com.comentario }}
+                    </p>
+                </div>
+            {% endfor %}
+
+        </div>
     </div>
+
+    
+
+    <pre>
+        {{ dump(comentarios) }}
+    </pre>
 
 
 {% endblock %}
